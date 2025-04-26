@@ -4,4 +4,5 @@ project(cpp-quarium
     DESCRIPTION "Project made to create a virtual aquarium"
     LANGUAGES CXX)
 
-add_executable(cpp-quarium src/Main.cpp src/Aquarium.cpp src/Entities/Entity.cpp)
+add_executable(cpp-quarium src/Main.cpp src/Aquarium.cpp src/Entities/Entity.cpp
+        src/Aquarium.inl)
