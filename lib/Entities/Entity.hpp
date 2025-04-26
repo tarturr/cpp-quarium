@@ -20,6 +20,9 @@ public:
 	virtual void MakeTurn(Aquarium& aquarium) noexcept = 0;
 	virtual void GetBitten() noexcept = 0;
 
+	int GetHealth() const noexcept;
+	int GetAge() const noexcept;
+
 	virtual ~Entity() noexcept = default;
 protected:
 	void LoseHealth(int points) noexcept;
@@ -34,6 +37,11 @@ class Algae final : public Entity
 public:
 	using Entity::Entity;
 
+	Algae(const Algae&) = delete;
+	Algae& operator=(const Algae&) = delete;
+	Algae(Algae&&) = default;
+	Algae& operator=(Algae&&) = default;
+
 	void MakeTurn(Aquarium& aquarium) noexcept override;
 	void GetBitten() noexcept override;
 
@@ -44,15 +52,21 @@ public:
 class Fish : public Entity
 {
 public:
-	explicit Fish(std::string name) noexcept;
+	enum class Gender{ Female, Male };
+	enum class FoodType{ Herbivorous, Carnivorous };
+
+	Fish(std::string name, Gender gender, FoodType foodType) noexcept;
 
 	void MakeTurn(Aquarium& aquarium) noexcept override;
 	void GetBitten() noexcept override;
 
+	std::string_view GetName() const noexcept;
+
 	~Fish() noexcept override = default;
 private:
 	std::string m_name;
-	bool m_gender;
+	Gender m_gender;
+	FoodType m_foodType;
 };
 
 #endif
