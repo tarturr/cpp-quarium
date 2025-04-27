@@ -1,80 +1,49 @@
 #include "../lib/Aquarium.hpp"
 
-#include <algorithm>
 #include <iostream>
-#include <random>
 
 
 void Aquarium::MakeTurn() noexcept
 {
     std::cout << "====== Turn " << m_turn << " ======" << std::endl;
 
-    for (auto& algae : m_algae)
-    {
-        algae.MakeTurn(*this);
-    }
+    m_algae.Act(*this);
+    m_fishes.Act(*this);
 
-    for (const auto& fish : m_fishes)
-    {
-        fish->MakeTurn(*this);
-    }
+    m_algae.Clean();
+    m_fishes.Clean();
 
-    this->Clean();
-
-    std::cout << "Poissons restants : " << m_fishes.size()
-            << "\nAlgues restantes : " << m_algae.size() << "\n" << std::endl;
+    std::cout << "Poissons restants : " << m_fishes.Size()
+            << "\nAlgues restantes : " << m_algae.Size() << "\n" << std::endl;
     ++m_turn;
 }
 
 void Aquarium::AddAlgae(Algae&& algae) noexcept
 {
-    m_algae.emplace_back(std::move(algae));
+    m_algae.Add(std::move(algae));
 }
 
-void Aquarium::AddFish(UniqueFish&& fish) noexcept
+void Aquarium::AddFish(Fish&& fish) noexcept
 {
-    m_fishes.emplace_back(std::move(fish));
-}
-
-Algae* Aquarium::RandomAlgae() noexcept
-{
-    return &m_algae[RandomIndex(m_algae)];
-}
-
-Fish* Aquarium::RandomFish() const noexcept
-{
-    return m_fishes[RandomIndex(m_fishes)].get();
+    m_fishes.Add(std::move(fish));
 }
 
 std::size_t Aquarium::AlgaeCount() const noexcept
 {
-    return m_algae.size();
+    return m_algae.Size();
 }
 
 std::size_t Aquarium::FishCount() const noexcept
 {
-    return m_fishes.size();
+    return m_fishes.Size();
 }
 
-void Aquarium::Clean() noexcept
+Algae* Aquarium::RandomAlgae() noexcept
 {
-    for (auto algaeIt{ std::begin(m_algae) }; algaeIt != std::end(m_algae);)
-    {
-        algaeIt = algaeIt->GetHealth() == 0 || algaeIt->GetAge() == 20
-            ? m_algae.erase(algaeIt)
-            : algaeIt + 1;
-    }
+    return m_algae.PickRandom();
+}
 
-    for (auto fishIt{ std::begin(m_fishes) }; fishIt != std::end(m_fishes);)
-    {
-        if (const UniqueFish& fish{ *fishIt }; fish->GetHealth() == 0 || fish->GetAge() == 20)
-        {
-            std::cout << fish->GetName() << " est mort !\n";
-            fishIt = m_fishes.erase(fishIt);
-        }
-        else
-        {
-            ++fishIt;
-        }
-    }
+Fish* Aquarium::RandomFish() noexcept
+{
+    return m_fishes.PickRandom();
 }

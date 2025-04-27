@@ -10,24 +10,32 @@ class Aquarium;
 class Entity
 {
 public:
+	enum class State { Alive, Dead };
+
 	Entity() noexcept;
-	explicit Entity(int health) noexcept;
+	Entity(int health) noexcept;
 
 	Entity(const Entity&) = delete;
 	Entity& operator=(const Entity&) = delete;
 	Entity(Entity&&) = default;
 	Entity& operator=(Entity&&) = default;
 
-	virtual void MakeTurn(Aquarium& aquarium) noexcept = 0;
-	virtual void GetBitten() noexcept = 0;
+	void Act(Aquarium& aquarium) noexcept;
+	void Bite(Entity* entity) noexcept;
 
+	State GetState() const noexcept;
 	int GetHealth() const noexcept;
 	int GetAge() const noexcept;
 
 	virtual ~Entity() noexcept = default;
 protected:
 	void LoseHealth(int points) noexcept;
+	void Heal(int points) noexcept;
 private:
+	virtual void MakeTurn(Aquarium& aquarium) noexcept = 0;
+	virtual void GetBitten() noexcept = 0;
+
+	State m_state;
 	int m_health;
 	int m_age;
 };
@@ -43,10 +51,10 @@ public:
 	Algae(Algae&&) = default;
 	Algae& operator=(Algae&&) = default;
 
+	~Algae() noexcept override = default;
+private:
 	void MakeTurn(Aquarium& aquarium) noexcept override;
 	void GetBitten() noexcept override;
-
-	~Algae() noexcept override = default;
 };
 
 
@@ -58,13 +66,18 @@ public:
 
 	Fish(std::string name, Gender gender, FoodType foodType) noexcept;
 
-	void MakeTurn(Aquarium& aquarium) noexcept override;
-	void GetBitten() noexcept override;
+	Fish(const Fish &other) = delete;
+	Fish& operator=(const Fish &other) = delete;
+	Fish(Fish &&other) noexcept = default;
+	Fish& operator=(Fish &&other) noexcept = default;
 
 	std::string_view GetName() const noexcept;
 
 	~Fish() noexcept override = default;
 private:
+	void MakeTurn(Aquarium& aquarium) noexcept override;
+	void GetBitten() noexcept override;
+
 	std::string m_name;
 	Gender m_gender;
 	FoodType m_foodType;

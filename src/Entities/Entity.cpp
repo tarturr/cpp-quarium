@@ -8,16 +8,31 @@ Entity::Entity() noexcept : Entity(10)
 }
 
 Entity::Entity(int health) noexcept
-	: m_health(health), m_age(0)
+	: m_state(State::Alive), m_health(health), m_age(0)
 {
 }
 
-void Entity::MakeTurn(Aquarium& aquarium) noexcept
+void Entity::Act(Aquarium &aquarium) noexcept
 {
 	if (++m_age >= 20)
 	{
-		m_health = 0;
+		m_state = State::Dead;
 	}
+
+	if (m_state == State::Alive)
+	{
+		MakeTurn(aquarium);
+	}
+}
+
+void Entity::Bite(Entity* entity) noexcept
+{
+	entity->GetBitten();
+}
+
+Entity::State Entity::GetState() const noexcept
+{
+	return m_state;
 }
 
 int Entity::GetHealth() const noexcept
@@ -35,6 +50,7 @@ void Entity::LoseHealth(int points) noexcept
 	if (m_health - points <= 0)
 	{
 		m_health = 0;
+		m_state = State::Dead;
 	}
 	else
 	{
@@ -42,15 +58,20 @@ void Entity::LoseHealth(int points) noexcept
 	}
 }
 
+void Entity::Heal(int points) noexcept
+{
+	m_health += points;
+}
+
 void Algae::MakeTurn(Aquarium& aquarium) noexcept
 {
-	Entity::MakeTurn(aquarium);
+	Heal(1);
 
 	if (int health = GetHealth(); health >= 10)
 	{
 		int half = health / 2;
 		LoseHealth(half);
-		aquarium.AddAlgae(Algae { half });
+		aquarium.AddAlgae(half);
 	}
 }
 
@@ -67,7 +88,9 @@ Fish::Fish(std::string name, Gender gender, FoodType foodType) noexcept
 
 void Fish::MakeTurn(Aquarium &aquarium) noexcept
 {
-	Entity::MakeTurn(aquarium);
+	LoseHealth(1);
+
+	if (GetHealth() > 5 || GetState() == State::Dead) return;
 
 	if (m_foodType == FoodType::Carnivorous && aquarium.FishCount() > 1)
 	{
@@ -78,11 +101,13 @@ void Fish::MakeTurn(Aquarium &aquarium) noexcept
 			target = aquarium.RandomFish();
 		} while (target == this);
 
-		target->GetBitten();
+		Bite(target);
+		Heal(5);
 	}
 	else if (m_foodType == FoodType::Herbivorous && aquarium.AlgaeCount() > 0)
 	{
-		aquarium.RandomAlgae()->GetBitten();
+		Bite(aquarium.RandomAlgae());
+		Heal(3);
 	}
 }
 
