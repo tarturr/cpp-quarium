@@ -3,8 +3,12 @@
 #include "../../lib/Aquarium.hpp"
 #include <iostream>
 
-Entity::Entity() noexcept
-	: m_health(10), m_age(0)
+Entity::Entity() noexcept : Entity(10)
+{
+}
+
+Entity::Entity(int health) noexcept
+	: m_health(health), m_age(0)
 {
 }
 
@@ -41,7 +45,13 @@ void Entity::LoseHealth(int points) noexcept
 void Algae::MakeTurn(Aquarium& aquarium) noexcept
 {
 	Entity::MakeTurn(aquarium);
-	aquarium.AddAlgae();
+
+	if (int health = GetHealth(); health >= 10)
+	{
+		int half = health / 2;
+		LoseHealth(half);
+		aquarium.AddAlgae(Algae { half });
+	}
 }
 
 void Algae::GetBitten() noexcept
@@ -59,21 +69,18 @@ void Fish::MakeTurn(Aquarium &aquarium) noexcept
 {
 	Entity::MakeTurn(aquarium);
 
-	if (m_foodType == FoodType::Carnivorous)
+	if (m_foodType == FoodType::Carnivorous && aquarium.FishCount() > 1)
 	{
-		if (aquarium.FishCount() > 1)
+		Fish* target;
+
+		do
 		{
-			Fish* target;
+			target = aquarium.RandomFish();
+		} while (target == this);
 
-			do
-			{
-				target = aquarium.RandomFish();
-			} while (target == this);
-
-			target->GetBitten();
-		}
+		target->GetBitten();
 	}
-	else if (aquarium.AlgaeCount() > 0)
+	else if (m_foodType == FoodType::Herbivorous && aquarium.AlgaeCount() > 0)
 	{
 		aquarium.RandomAlgae()->GetBitten();
 	}

@@ -5,7 +5,10 @@
 int main()
 {
     Aquarium aquarium{};
-    aquarium.AddAlgae();
+    aquarium.AddAlgae(Algae {});
+    aquarium.AddAlgae(Algae {});
+    aquarium.AddAlgae(Algae {});
+    aquarium.AddAlgae(Algae {});
     aquarium.AddFish(std::make_unique<Fish>("Nemo1", Fish::Gender::Male, Fish::FoodType::Carnivorous));
     aquarium.AddFish(std::make_unique<Fish>("Nemo2", Fish::Gender::Male, Fish::FoodType::Carnivorous));
     aquarium.AddFish(std::make_unique<Fish>("Nemo3", Fish::Gender::Male, Fish::FoodType::Carnivorous));

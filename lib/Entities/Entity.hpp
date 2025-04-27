@@ -11,6 +11,7 @@ class Entity
 {
 public:
 	Entity() noexcept;
+	explicit Entity(int health) noexcept;
 
 	Entity(const Entity&) = delete;
 	Entity& operator=(const Entity&) = delete;

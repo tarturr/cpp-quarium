@@ -22,7 +22,7 @@ public:
 	Aquarium& operator=(Aquarium&&) = default;
 
 	void MakeTurn() noexcept;
-	void AddAlgae() noexcept;
+	void AddAlgae(Algae&& algae) noexcept;
 	void AddFish(UniqueFish&& fish) noexcept;
 	Algae* RandomAlgae() noexcept;
 	Fish* RandomFish() const noexcept;

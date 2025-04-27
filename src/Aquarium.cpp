@@ -21,13 +21,14 @@ void Aquarium::MakeTurn() noexcept
 
     this->Clean();
 
+    std::cout << "Poissons restants : " << m_fishes.size()
+            << "\nAlgues restantes : " << m_algae.size() << "\n" << std::endl;
     ++m_turn;
-    std::cout << "\n";
 }
 
-void Aquarium::AddAlgae() noexcept
+void Aquarium::AddAlgae(Algae&& algae) noexcept
 {
-    m_algae.emplace_back();
+    m_algae.emplace_back(std::move(algae));
 }
 
 void Aquarium::AddFish(UniqueFish&& fish) noexcept
@@ -70,7 +71,6 @@ void Aquarium::Clean() noexcept
         {
             std::cout << fish->GetName() << " est mort !\n";
             fishIt = m_fishes.erase(fishIt);
-            std::cout << "Poissons restants : " << m_fishes.size() << std::endl;
         }
         else
         {
