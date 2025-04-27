@@ -1,10 +1,12 @@
-#ifndef AQUARIUM_INL
-#define AQUARIUM_INL
+#ifndef ENTITY_CONTAINER_INL
+#define ENTITY_CONTAINER_INL
 
 #include <random>
 
+
 template<class T>
-std::size_t Aquarium::RandomIndex(const std::vector<T> &vector) const noexcept
+template<class U>
+std::size_t EntityContainer<T>::RandomIndex(const std::vector<U>& vector) noexcept
 {
     std::random_device device;
     std::mt19937 gen{ device() };
@@ -13,4 +15,5 @@ std::size_t Aquarium::RandomIndex(const std::vector<T> &vector) const noexcept
     return random(gen);
 }
 
-#endif // AQUARIUM_INL
+
+#endif // ENTITY_CONTAINER_INL
