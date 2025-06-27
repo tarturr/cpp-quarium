@@ -61,10 +61,23 @@ private:
 class Fish : public Entity
 {
 public:
-	enum class Gender{ Female, Male };
-	enum class FoodType{ Herbivorous, Carnivorous };
+	enum class Gender
+	{
+		Male,
+		Female
+	};
 
-	Fish(std::string name, Gender gender, FoodType foodType) noexcept;
+	enum class Breed
+	{
+		Grouper,
+		Tuna,
+		Clownfish,
+		Sole,
+		SeaBass,
+		Carp
+	};
+
+	Fish(std::string name, Gender gender, Breed breed) noexcept;
 
 	Fish(const Fish &other) = delete;
 	Fish& operator=(const Fish &other) = delete;
@@ -72,6 +85,7 @@ public:
 	Fish& operator=(Fish &&other) noexcept = default;
 
 	std::string_view GetName() const noexcept;
+	bool IsCarnivorous() const noexcept;
 
 	~Fish() noexcept override = default;
 private:
@@ -80,7 +94,7 @@ private:
 
 	std::string m_name;
 	Gender m_gender;
-	FoodType m_foodType;
+	Breed m_breed;
 };
 
 #endif

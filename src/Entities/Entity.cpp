@@ -81,8 +81,8 @@ void Algae::GetBitten() noexcept
 	std::cout << "Une algue s'est faite mordre ! PV restants : " << GetHealth() << std::endl;
 }
 
-Fish::Fish(std::string name, Gender gender, FoodType foodType) noexcept
-	: m_name(std::move(name)), m_gender(gender), m_foodType(foodType)
+Fish::Fish(std::string name, Gender gender, Breed breed) noexcept
+	: m_name(std::move(name)), m_gender(gender), m_breed(breed)
 {
 }
 
@@ -90,9 +90,10 @@ void Fish::MakeTurn(Aquarium &aquarium) noexcept
 {
 	LoseHealth(1);
 
+	// If the fish is hungry or is dead.
 	if (GetHealth() > 5 || GetState() == State::Dead) return;
 
-	if (m_foodType == FoodType::Carnivorous && aquarium.FishCount() > 1)
+	if (IsCarnivorous() && aquarium.FishCount() > 1)
 	{
 		Fish* target;
 
@@ -104,7 +105,7 @@ void Fish::MakeTurn(Aquarium &aquarium) noexcept
 		Bite(target);
 		Heal(5);
 	}
-	else if (m_foodType == FoodType::Herbivorous && aquarium.AlgaeCount() > 0)
+	else if (!IsCarnivorous() && aquarium.AlgaeCount() > 0)
 	{
 		Bite(aquarium.RandomAlgae());
 		Heal(3);
@@ -120,4 +121,17 @@ void Fish::GetBitten() noexcept
 std::string_view Fish::GetName() const noexcept
 {
 	return m_name;
+}
+
+bool Fish::IsCarnivorous() const noexcept
+{
+	switch (m_breed)
+	{
+		case Breed::Grouper:
+		case Breed::Tuna:
+		case Breed::Clownfish:
+			return true;
+		default:
+			return false;
+	}
 }
