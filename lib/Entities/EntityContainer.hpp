@@ -1,13 +1,13 @@
 #ifndef ENTITY_CONTAINER_HPP
 #define ENTITY_CONTAINER_HPP
+
+
 #include <memory>
 #include <vector>
 
 #include "Entity.hpp"
 
-
 class Aquarium;
-
 
 template<class T>
 struct EntityContainer
@@ -19,9 +19,6 @@ struct EntityContainer
     virtual std::size_t Size() const noexcept = 0;
 
     virtual ~EntityContainer() noexcept = default;
-protected:
-    template<class U>
-    static std::size_t RandomIndex(const std::vector<U>& vector) noexcept;
 };
 
 struct AlgaeContainer : public EntityContainer<Algae>
@@ -55,9 +52,6 @@ public:
 private:
     std::vector<std::unique_ptr<Fish>> m_fishes;
 };
-
-
-#include "../../src/Entities/EntityContainer.inl"
 
 
 #endif //ENTITY_CONTAINER_HPP
