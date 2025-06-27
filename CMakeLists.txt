@@ -5,6 +5,4 @@ project(cpp-quarium
     LANGUAGES CXX)
 
 add_executable(cpp-quarium src/Main.cpp src/Aquarium.cpp src/Entities/Entity.cpp
-        src/Entities/EntityContainer.inl
-        lib/Entities/EntityContainer.hpp
         src/Entities/EntityContainer.cpp)
