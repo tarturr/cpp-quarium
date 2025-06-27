@@ -84,8 +84,10 @@ public:
 	Fish(Fish &&other) noexcept = default;
 	Fish& operator=(Fish &&other) noexcept = default;
 
+	Fish* FindOtherFish(Aquarium& aquarium) const noexcept;
 	std::string_view GetName() const noexcept;
 	bool IsCarnivorous() const noexcept;
+	bool IsHungry() const noexcept;
 
 	~Fish() noexcept override = default;
 private:

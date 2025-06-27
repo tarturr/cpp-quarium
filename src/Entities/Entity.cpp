@@ -1,6 +1,7 @@
 #include "../../lib/Entities/Entity.hpp"
 
 #include "../../lib/Aquarium.hpp"
+#include "../../lib/Random.hpp"
 #include <iostream>
 
 Entity::Entity() noexcept : Entity(10)
@@ -90,17 +91,23 @@ void Fish::MakeTurn(Aquarium &aquarium) noexcept
 {
 	LoseHealth(1);
 
-	// If the fish is hungry or is dead.
-	if (GetHealth() > 5 || GetState() == State::Dead) return;
-
-	if (IsCarnivorous() && aquarium.FishCount() > 1)
+	if (GetState() == State::Dead)
 	{
-		Fish* target;
+		return;
+	}
 
-		do
+	if (!IsHungry())
+	{
+		if (Fish* partner = FindOtherFish(aquarium); partner->m_breed == m_breed && partner->m_gender != m_gender)
 		{
-			target = aquarium.RandomFish();
-		} while (target == this);
+			std::string childName{ m_name + " Jr." };
+			std::cout << childName << " est né !" << std::endl;
+			aquarium.AddFish({ std::move(childName), static_cast<Gender>(RandomNumber(0, 1)), m_breed });
+		}
+	}
+	else if (IsCarnivorous() && aquarium.FishCount() > 1)
+	{
+		Fish* target = FindOtherFish(aquarium);
 
 		Bite(target);
 		Heal(5);
@@ -116,6 +123,18 @@ void Fish::GetBitten() noexcept
 {
 	LoseHealth(4);
 	std::cout << m_name << " s'est fait mordre ! PV restants : " << GetHealth() << std::endl;
+}
+
+Fish* Fish::FindOtherFish(Aquarium& aquarium) const noexcept
+{
+	Fish* target;
+
+	do
+	{
+		target = aquarium.RandomFish();
+	} while (target == this);
+
+	return target;
 }
 
 std::string_view Fish::GetName() const noexcept
@@ -134,4 +153,9 @@ bool Fish::IsCarnivorous() const noexcept
 		default:
 			return false;
 	}
+}
+
+bool Fish::IsHungry() const noexcept
+{
+	return GetHealth() <= 5;
 }
