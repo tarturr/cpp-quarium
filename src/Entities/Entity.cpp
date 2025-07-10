@@ -85,6 +85,23 @@ void Algae::GetBitten() noexcept
 Fish::Fish(std::string name, Gender gender, Breed breed) noexcept
 	: m_name(std::move(name)), m_gender(gender), m_breed(breed)
 {
+	switch (m_breed)
+	{
+		case Breed::Carp:
+		case Breed::Tuna:
+			m_sexuality = Sexuality::MonoSexual;
+			break;
+
+		case Breed::SeaBass:
+		case Breed::Grouper:
+			m_sexuality = Sexuality::AgeHermaphrodite;
+			break;
+
+		case Breed::Clownfish:
+		case Breed::Sole:
+			m_sexuality = Sexuality::OpportunisticHermaphrodite;
+			break;
+	}
 }
 
 void Fish::MakeTurn(Aquarium &aquarium) noexcept

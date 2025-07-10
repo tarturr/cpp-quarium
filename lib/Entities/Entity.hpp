@@ -77,6 +77,13 @@ public:
 		Carp
 	};
 
+	enum class Sexuality
+	{
+		MonoSexual,
+		AgeHermaphrodite,
+		OpportunisticHermaphrodite
+	};
+
 	Fish(std::string name, Gender gender, Breed breed) noexcept;
 
 	Fish(const Fish &other) = delete;
@@ -97,6 +104,7 @@ private:
 	std::string m_name;
 	Gender m_gender;
 	Breed m_breed;
+	Sexuality m_sexuality;
 };
 
 #endif
